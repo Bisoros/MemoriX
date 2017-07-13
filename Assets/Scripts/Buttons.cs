@@ -10,16 +10,19 @@ public class Buttons : MonoBehaviour
     public void memoryMatrix ()
     {
         SceneManager.LoadScene("Memory Matrix");
+        PlayerPrefs.SetInt("difficulty", 0);
     }
 
     public void simon ()
     {
         SceneManager.LoadScene("Simon");
+        PlayerPrefs.SetInt("difficultySimon", 0);
     }
 
     public void matchPairs ()
     {
         SceneManager.LoadScene("Match Pairs");
+        PlayerPrefs.SetInt("difficultyMP", 0);
     }
 
     public void quit ()
