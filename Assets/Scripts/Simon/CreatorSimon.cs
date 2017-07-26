@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +14,7 @@ public class CreatorSimon : MonoBehaviour
     public static float crtTime;
     public Text level;
 
+    //showing the pattern
     private IEnumerator Show ()
     {
         int colour;
@@ -57,12 +57,16 @@ public class CreatorSimon : MonoBehaviour
 
 	private void Start ()
     {
+        //initialising the level
         Time.timeScale = 1;
         modify = false;
         ready = false;
         crtTime = 0;
 
-        nrClicks = 3 + PlayerPrefs.GetInt("difficultySimon");
+        nrClicks = 3 + (int)Mathf.Round(1.5f * Mathf.Log(PlayerPrefs.GetInt("difficultySimon"))) + Random.Range(-1, 1);
+
+        if (nrClicks < 3)
+            nrClicks = 3;
 
         PlayerPrefs.SetInt("difficultySimon", PlayerPrefs.GetInt("difficultySimon") + 1);
 
@@ -79,6 +83,7 @@ public class CreatorSimon : MonoBehaviour
 
         StartCoroutine(Show());
 
+        //choosing the event
         modifier = Random.Range(1, 6);
 
         if (Random.Range(0, 2) == 1)
@@ -92,6 +97,7 @@ public class CreatorSimon : MonoBehaviour
         if (Time.timeScale == 0)
             return;
 
+        //events
         if (modify)
         {
             if (rotation <= 0)
