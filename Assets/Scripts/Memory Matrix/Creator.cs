@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,30 +18,32 @@ public class Creator : MonoBehaviour
         public bool active;
         public GameObject cube;
 
-        public Matrix(GameObject a, bool b = false)
+        public Matrix(GameObject Object, bool state = false)
         {
-            active = false;
-            cube = a;
+            active = state;
+            cube = Object;
         }
     };
 
+    //hiding the matrix
     private IEnumerator hide(Matrix[][] Matrix)
     {
-        yield return new WaitForSecondsRealtime(waitTime);
+        yield return new WaitForSeconds(waitTime);
 
         for (int i = 0; i < lines; i++)
             for (int j = 0; j < columns; j++)
                 if (Matrix[i][j].active)
                     Matrix[i][j].cube.GetComponent<MeshRenderer>().material.color = Color.white;
 
-        yield return new WaitForSecondsRealtime(waitTime2);
+        yield return new WaitForSeconds(waitTime2);
 
         modify = true;
     }
 
+    //NOT event
     private IEnumerator modifier6(Matrix[][] Matrix)
     {     
-        yield return new WaitForSecondsRealtime(waitTime+waitTime2);
+        yield return new WaitForSeconds(waitTime+waitTime2);
 
         int a = Random.Range(0, lines), b=Random.Range(0, columns);
 
@@ -58,7 +59,7 @@ public class Creator : MonoBehaviour
             nrActive--;
         }
 
-        yield return new WaitForSecondsRealtime(1);
+        yield return new WaitForSeconds(1);
         Matrix[a][b].cube.GetComponent<MeshRenderer>().material.color = Color.white;
         rotation = 0;
 
@@ -66,18 +67,15 @@ public class Creator : MonoBehaviour
 
     private void Start()
     {
+        //initialising level
         Time.timeScale = 1;
         modify = false;
         ready = false;
         crtTime = 0;
 
-        int c= Random.Range(-1, 1);
-
-        columns = 2 + (int)Mathf.Round(1.5f*Mathf.Log(PlayerPrefs.GetInt("difficulty"))) + c;
+        columns = 2 + (int)Mathf.Round(1.5f*Mathf.Log(PlayerPrefs.GetInt("difficulty"))) + Random.Range(-1, 1);
         if (PlayerPrefs.GetInt("difficulty") == 0)
             columns = 2 + Random.Range(-1, 1);
-
-        //print((int)Mathf.Round(1.5f * Mathf.Log(PlayerPrefs.GetInt("difficulty"))) + " " + c + " " + columns);
 
         lines = columns + Random.Range(-1, 1);
 
@@ -91,7 +89,7 @@ public class Creator : MonoBehaviour
 
         level.text = "Level: " + PlayerPrefs.GetInt("difficulty").ToString();
 
-        nrActive = Random.Range(lines < columns ? lines : columns, (int)(lines * columns / PlayerPrefs.GetInt("difficulty")));
+        nrActive = Random.Range(lines < columns ? lines : columns, (lines * columns / PlayerPrefs.GetInt("difficulty")));
 
         supportWidth = (lines + 1) * lenMargin + lines * lenCube;
         supportHeight = (columns + 1) * lenMargin + columns * lenCube;
@@ -100,6 +98,7 @@ public class Creator : MonoBehaviour
         Support.transform.position = new Vector3(supportWidth / 2f, 0, supportHeight / 2f);
         Camera.transform.position = new Vector3(supportWidth / 2f, (supportWidth > supportHeight) ? supportWidth * 3 / 2f : supportHeight * 3 / 2f, supportHeight / 2f);
 
+        //instantiating the matrix
         Matrix[][] Matrix = new Matrix[lines][];
 
         int i, j;
@@ -138,6 +137,7 @@ public class Creator : MonoBehaviour
 
         StartCoroutine(hide(Matrix));
 
+        //choosing event
         modifier = Random.Range(1, 7);
 
         if (Random.Range(0, 2) == 1)
@@ -154,6 +154,7 @@ public class Creator : MonoBehaviour
         if (Time.timeScale == 0)
             return;
 
+        //events
         if (modify)
         {
             if (rotation <= 0)
@@ -211,4 +212,3 @@ public class Creator : MonoBehaviour
         }
     }
 }
-
