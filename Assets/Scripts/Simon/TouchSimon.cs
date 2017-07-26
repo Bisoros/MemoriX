@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +8,9 @@ public class TouchSimon : MonoBehaviour
     private float time;
     private bool lost = false;
     public Text avarageTime, level;
-    public GameObject endScreen, menu;
+    public GameObject endScreen, menu, crtLevel;
 
+    //colouring pressed cube
     private IEnumerator Show(int colour)
     {
         switch (colour)
@@ -41,8 +41,10 @@ public class TouchSimon : MonoBehaviour
         }
     }
 
+    //lose
     private IEnumerator ShowFinal(int colour)
     {
+        //end feedback
         for (int i = colour; i < CreatorSimon.nrClicks; i++)
         {
             switch (CreatorSimon.order[i])
@@ -75,18 +77,17 @@ public class TouchSimon : MonoBehaviour
             yield return new WaitForSeconds(.5f);
         }
 
-		avarageTime.text = "Average Time/Completed Puzzle: " + PlayerPrefs.GetFloat("avarageTimeSimon").ToString();
+		avarageTime.text = "Average Time/Completed Puzzle: " + (PlayerPrefs.GetFloat("avarageTimeSimon")==0? "N/A" : PlayerPrefs.GetFloat("avarageTimeSimon").ToString("0.00"));
         PlayerPrefs.SetInt("highscoreSimon", Mathf.Max(PlayerPrefs.GetInt("highscoreSimon"), PlayerPrefs.GetInt("difficultySimon")));
         level.text = "Level Reached: " + PlayerPrefs.GetInt("difficultySimon").ToString() + " (Highscore: " + PlayerPrefs.GetInt("highscoreSimon").ToString() + ")";
         yield return new WaitForSeconds(1);
         Time.timeScale = 0;
-        menu.SetActive(true);
+        menu.SetActive(false);
+        crtLevel.SetActive(false);
         endScreen.SetActive(true);
         PlayerPrefs.SetInt("difficultySimon", 0);
         PlayerPrefs.SetFloat("avarageTimeSimon", 0);
         PlayerPrefs.Save();
-
-     //   Application.LoadLevel(Application.loadedLevel);
     }
 
     private void Start()
@@ -94,11 +95,12 @@ public class TouchSimon : MonoBehaviour
         lost = false;
     }
 
+    //win
     private IEnumerator end()
     {
         PlayerPrefs.SetFloat("avarageTimeSimon", ((PlayerPrefs.GetInt("difficultySimon") - 1) * PlayerPrefs.GetFloat("avarageTimeSimon") + time) / (float)PlayerPrefs.GetInt("difficultySimon"));
 
-        yield return new WaitForSecondsRealtime(1);
+        yield return new WaitForSeconds(3);
 
         Application.LoadLevel(Application.loadedLevel);
     }
@@ -108,6 +110,7 @@ public class TouchSimon : MonoBehaviour
         if (Time.timeScale == 0)
             return;
 
+        //getting user input
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         
         RaycastHit hitInfo;
@@ -115,6 +118,7 @@ public class TouchSimon : MonoBehaviour
         if (Physics.Raycast(ray, out hitInfo))
             if (Input.GetMouseButtonDown(0) && CreatorSimon.ready)
             {
+                //processing user input
                 if (hitInfo.collider.CompareTag(CreatorSimon.order[i].ToString()))
                 {
                     StartCoroutine(Show(CreatorSimon.order[i]));
@@ -125,15 +129,12 @@ public class TouchSimon : MonoBehaviour
                 {
                     time = Time.timeSinceLevelLoad - CreatorSimon.crtTime;
                     lost = true;
-                    Debug.Log("lose " + time);
                     StartCoroutine(ShowFinal(i));
-                    //Application.LoadLevel(Application.loadedLevel);
                 }
 
                 if (i == CreatorSimon.nrClicks && !lost)
                 {
                     time = Time.timeSinceLevelLoad - CreatorSimon.crtTime;
-                    Debug.Log("win " + time);
                     StartCoroutine(end());
                 }
             }
