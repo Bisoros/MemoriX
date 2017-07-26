@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +15,7 @@ public class CreatorMP : MonoBehaviour
     public static float crtTime;
     public Text level;
 
+    //Fisher–Yates shuffle
     private void reshuffle(Color[] colours)
     {
         for (int t = 0; t < nrPairs*2; t++)
@@ -27,9 +27,10 @@ public class CreatorMP : MonoBehaviour
         }
     }
     
+    //hiding pattern
     private IEnumerator hide()
     {
-        yield return new WaitForSecondsRealtime(waitTime);
+        yield return new WaitForSeconds(waitTime);
 
         GameObject[] cubes = GameObject.FindGameObjectsWithTag("1");
 
@@ -41,6 +42,7 @@ public class CreatorMP : MonoBehaviour
 
     private void Start()
     {
+        //initialising level
         Time.timeScale = 1;
 
         modify = false;
@@ -80,6 +82,7 @@ public class CreatorMP : MonoBehaviour
         Support.transform.position = new Vector3(supportWidth / 2f, 0, supportHeight / 2f);
         Camera.transform.position = new Vector3(supportWidth / 2f, (supportWidth > supportHeight) ? supportWidth * 3 / 2f : supportHeight * 3 / 2f, supportHeight / 2f);
 
+        //instantiating the matrix
         int i, j, k=0;
 
         GameObject aux;
@@ -101,6 +104,7 @@ public class CreatorMP : MonoBehaviour
 
         StartCoroutine(hide());
 
+        //choosing event
         modifier = Random.Range(1, 6);
 
         if (Random.Range(0, 2) == 1)
@@ -114,6 +118,7 @@ public class CreatorMP : MonoBehaviour
         if (Time.timeScale == 0)
             return;
 
+        //events
         if (modify)
         {
             if (rotation <= 0)
