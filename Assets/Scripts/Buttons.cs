@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +5,7 @@ public class Buttons : MonoBehaviour
 {
     public GameObject helpImg, canvas;
 
+    //gamemode selection
     public void memoryMatrix ()
     {
         SceneManager.LoadScene("Memory Matrix");
@@ -25,6 +24,7 @@ public class Buttons : MonoBehaviour
         PlayerPrefs.SetInt("difficultyMP", 0);
     }
 
+    //menu buttons
     public void quit ()
     {
         Application.Quit();
