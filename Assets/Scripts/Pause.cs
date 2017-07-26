@@ -1,5 +1,3 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +5,7 @@ public class Pause : MonoBehaviour
 {
     public GameObject overlay, menuButton;
 
+    //pause buttons
 	public void resume()
     {
         Time.timeScale = 1;
